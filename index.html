@@ -678,6 +678,7 @@
     var temperature = 1.35;
     var Elysian_model = 'deepseek-chat';
 
+    const version = '1.0.0';
     const boot_message = '⚡ 我们会把这个不完美的故事，变成我们期望的样子 ⚡';
     const AES_KEY = CryptoJS.enc.Utf8.parse('kiana@2024aes-secret-key');
     const chatMessages = document.getElementById('chatMessages');
@@ -806,6 +807,13 @@
         Elysian_model = this.dataset.model;
         console.log('当前模型:', Elysian_model);
       });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const versionInfoElement = document.querySelector('#about-content .version-info:first-child');
+      if (versionInfoElement) {
+        versionInfoElement.textContent = '当前版本: ' + version;
+      }
     });
 
     // 首次加载设置默认按钮激活状态
