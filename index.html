@@ -415,7 +415,7 @@
       border-radius: 4px;
       padding: 20px;
       min-width: 620px;
-      min-height: 380px;
+      min-height: 400px;
       box-shadow: 0 0 30px rgba(93, 106, 255, 0.2);
     }
 
@@ -677,7 +677,7 @@
     var temperature = 1.35;
     var Elysian_model = 'deepseek-chat';
   
-    const version = '1.4.268';
+    const version = '1.4.278';
     const modelSettingsKey = 'elysian_realm_settings';
     const boot_message = '⚡ 我们会把这个不完美的故事，变成我们期望的样子 ⚡';
     const AES_KEY = CryptoJS.enc.Utf8.parse('kiana@2024aes-secret-key');
@@ -1038,7 +1038,7 @@
     
     // 清除历史记录
     function clearHistory() {
-      if (confirm('确定要清除当前实验存储吗？此操作不可撤销。')) {
+      if (confirm('确定要清除当前实验存储吗？此操作将:\n\n · 清除本地会话存储\n · 还原模型默认设置\n\n执行此操作后不可撤销。')) {
         // 清除本地存储
         localStorage.removeItem('elysian_realm_conversation');
         localStorage.removeItem('elysian_realm_settings');
@@ -1060,7 +1060,7 @@
     }
 
     function ClearAllData() {
-      if (confirm('确定要清除所有数据吗？此操作将:\n\n · 清除本地会话存储\n · 清除终端凭证信息\n\n执行此操作后不可撤销，并需重新进行认证。')) {
+      if (confirm('确定要清除所有数据吗？此操作将:\n\n · 清除本地会话存储\n · 清除终端凭证信息\n · 还原模型默认设置\n\n执行此操作后不可撤销，并需重新进行认证。')) {
         // 清除本地存储
         localStorage.removeItem('elysian_realm_conversation');
         localStorage.removeItem('elysian_realm_settings');
