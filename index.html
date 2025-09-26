@@ -515,7 +515,7 @@
       class="link-icon"
       loading="eager"
       decoding="sync">
-    <pre style="font-size: 10px; font-weight: bold; white-space: pre; user-select: none">
+    <pre id="pageTitle" style="font-size: 10px; font-weight: bold; white-space: pre; user-select: none">
   _____ _  __   ______ ___    _    _   _     ____  _____    _    _    __  __     ____ ___ __  __ _   _ _       _  _____ ___ ___  _   _ 
  | ____| | \ \ / / ___|_ _|  / \  | \ | |   |  _ \| ____|  / \  | |  |  \/  |   / ___|_ _|  \/  | | | | |     / \|_   _|_ _/ _ \| \ | |
  |  _| | |  \ V /\___ \| |  / _ \ |  \| |   | |_) |  _|   / _ \ | |  | |\/| |   \___ \| || |\/| | | | | |    / _ \ | |  | | | | |  \| |
@@ -826,6 +826,33 @@
 
     // 首次加载设置默认按钮激活状态
     document.querySelector('.switch-btn[data-model="deepseek-chat"]').classList.add('active');
+
+    let defaultTitle;
+
+    // 页面加载完成后初始化默认标题
+    document.addEventListener("DOMContentLoaded", function() {
+      const titleElement = document.getElementById('pageTitle');
+      defaultTitle = titleElement.textContent; // 自动获取初始文本
+    });
+
+    function checkScreenOrientation() {
+      var titleElement = document.getElementById('pageTitle');
+      if (window.innerHeight > window.innerWidth) {
+        titleElement.textContent = String.raw
+` _____ _  __   ______ ___    _    _   _     ____  _____    _    _     __  __ 
+| ____| | \ \ / / ___|_ _|  / \  | \ | |   |  _ \| ____|  / \  | |   |  \/  |
+|  _| | |  \ V /\___ \| |  / _ \ |  \| |   | |_) |  _|   / _ \ | |   | |\/| |
+| |___| |___| |  ___) | | / ___ \| |\  |   |  _ <| |___ / ___ \| |___| |  | |
+|_____|_____|_| |____/___/_/   \_\_| \_|   |_| \_\_____/_/   \_\_____|_|  |_|`; // 根据需要修改为其他标题文本
+      } else {
+        titleElement.textContent = defaultTitle;
+      }
+    }
+
+    window.onload = checkScreenOrientation;
+
+    // 在窗口大小改变时重新执行检查
+    window.onresize = checkScreenOrientation;
 
     function saveModelSettings() {
       const settings = {
