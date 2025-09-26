@@ -415,7 +415,7 @@
       border-radius: 4px;
       padding: 20px;
       min-width: 620px;
-      min-height: 350px;
+      min-height: 380px;
       box-shadow: 0 0 30px rgba(93, 106, 255, 0.2);
     }
 
@@ -675,7 +675,8 @@
     var temperature = 1.35;
     var Elysian_model = 'deepseek-chat';
 
-    const version = '1.4.234';
+    const version = '1.4.237';
+    const modelSettingsKey = 'elysian_realm_settings';
     const boot_message = '⚡ 我们会把这个不完美的故事，变成我们期望的样子 ⚡';
     const AES_KEY = CryptoJS.enc.Utf8.parse('kiana@2024aes-secret-key');
     const chatMessages = document.getElementById('chatMessages');
@@ -700,16 +701,19 @@
     frequencyPenaltySlider.addEventListener('input', function() {
       frequency_penalty = parseFloat(this.value);
       frequencyPenaltyValue.textContent = frequency_penalty;
+      saveModelSettings();
     });
 
     presencePenaltySlider.addEventListener('input', function() {
       presence_penalty = parseFloat(this.value);
       presencePenaltyValue.textContent = presence_penalty;
+      saveModelSettings();
     });
 
     temperatureSlider.addEventListener('input', function() {
       temperature = parseFloat(this.value);
       temperatureValue.textContent = temperature;
+      saveModelSettings();
     });
 
     // io设置
@@ -804,6 +808,7 @@
         
         Elysian_model = this.dataset.model;
         console.log('当前模型:', Elysian_model);
+        saveModelSettings();
       });
     });
 
@@ -816,6 +821,54 @@
 
     // 首次加载设置默认按钮激活状态
     document.querySelector('.switch-btn[data-model="deepseek-chat"]').classList.add('active');
+
+    function saveModelSettings() {
+      const settings = {
+        frequency_penalty,
+        presence_penalty,
+        temperature,
+        model: Elysian_model
+      };
+      localStorage.setItem(modelSettingsKey, JSON.stringify(settings));
+    }
+
+    function loadModelSettings() {
+      const saved = localStorage.getItem(modelSettingsKey);
+      if (saved) {
+        try {
+          const settings = JSON.parse(saved);
+          
+          // 更新全局变量
+          frequency_penalty = settings.frequency_penalty || 0.7;
+          presence_penalty = settings.presence_penalty || 0.7;
+          temperature = settings.temperature || 1.35;
+          Elysian_model = settings.model || 'deepseek-chat';
+
+          // 更新滑块
+          frequencyPenaltySlider.value = frequency_penalty;
+          presencePenaltySlider.value = presence_penalty;
+          temperatureSlider.value = temperature;
+          frequencyPenaltyValue.textContent = frequency_penalty.toFixed(2);
+          presencePenaltyValue.textContent = presence_penalty.toFixed(2);
+          temperatureValue.textContent = temperature.toFixed(2);
+
+          // 更新模型按钮
+          document.querySelectorAll('.switch-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.model === Elysian_model);
+          });
+
+          // 触发自定义事件更新滑块样式
+          ['frequency-penalty', 'presence-penalty', 'temperature'].forEach(id => {
+            const slider = document.getElementById(`${id}-slider`);
+            if (slider) {
+              slider.dispatchEvent(new Event('input'));
+            }
+          });
+        } catch (e) {
+          console.error('设置加载失败:', e);
+        }
+      }
+    }
 
     function switchTab(btn, targetId) {
       document.querySelectorAll('.control-btn-list').forEach(item => {
@@ -912,7 +965,11 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', loadAuthInfo);
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAuthInfo();
+      loadModelSettings();
+      // 其他初始化代码...
+    });
     
     // 保存到本地存储
     function saveConversationToStorage() {
@@ -968,10 +1025,20 @@
       if (confirm('确定要清除当前实验存储吗？此操作不可撤销。')) {
         // 清除本地存储
         localStorage.removeItem('elysian_realm_conversation');
+        localStorage.removeItem('elysian_realm_settings');
         
         // 重置对话上下文（保留系统消息）
         conversationContext = conversationContext.filter(msg => msg.role === 'system');
         
+        frequency_penalty = 0.7;
+        presence_penalty = 0.7;
+        temperature = 1.35;
+        Elysian_model = 'deepseek-chat';
+        
+        // 更新界面控件
+        saveModelSettings();
+        loadModelSettings();
+
         // 清空界面
         chatMessages.innerHTML = '';
         
@@ -987,6 +1054,7 @@
       if (confirm('确定要清除所有数据吗？此操作将:\n\n · 清除本地会话存储\n · 清除终端凭证信息\n\n执行此操作后不可撤销，并需重新进行认证。')) {
         // 清除本地存储
         localStorage.removeItem('elysian_realm_conversation');
+        localStorage.removeItem('elysian_realm_settings');
         localStorage.removeItem('authInfo');
         document.querySelector('.api-user-input').value = '';
         API_KEY = '';
@@ -995,6 +1063,15 @@
         // 重置对话上下文（保留系统消息）
         conversationContext = conversationContext.filter(msg => msg.role === 'system');
         
+        frequency_penalty = 0.7;
+        presence_penalty = 0.7;
+        temperature = 1.35;
+        Elysian_model = 'deepseek-chat';
+        
+        // 更新界面控件
+        saveModelSettings();
+        loadModelSettings();
+
         // 清空界面
         chatMessages.innerHTML = '';
         
@@ -1013,6 +1090,13 @@
           msg => msg.role === 'user' || msg.role === 'assistant'
         );
         
+        const modelSettings = {
+          frequency_penalty,
+          presence_penalty,
+          temperature,
+          model: Elysian_model
+        };
+
         // 生成统一时间戳
         const currentTimestamp = getTimeStamp();
         
@@ -1023,6 +1107,7 @@
             export_time: currentTimestamp,
             message_count: userAssistantMessages.length
           },
+          settings: modelSettings,
           messages: userAssistantMessages
         };
 
@@ -1051,6 +1136,27 @@
       reader.onload = function(e) {
         try {
           const importedData = JSON.parse(e.target.result);
+
+          if (importedData.settings) {
+            const settings = importedData.settings;
+            
+            // 更新全局变量
+            frequency_penalty = settings.frequency_penalty || 0.7;
+            presence_penalty = settings.presence_penalty || 0.7;
+            temperature = settings.temperature || 1.35;
+            Elysian_model = settings.model || 'deepseek-chat';
+
+            // 更新本地存储
+            localStorage.setItem(modelSettingsKey, JSON.stringify(settings));
+            
+            // 更新UI控件
+            frequencyPenaltySlider.value = frequency_penalty;
+            presencePenaltySlider.value = presence_penalty;
+            temperatureSlider.value = temperature;
+            document.querySelectorAll('.switch-btn').forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.model === Elysian_model);
+            });
+          }
           
           // 兼容旧版格式（直接包含消息数组的情况）
           let actualMessages = Array.isArray(importedData) ? 
@@ -1088,6 +1194,7 @@
             }
           });
 
+          saveModelSettings();
           saveConversationToStorage();
           setTimeout(() => scrollToBottom(), 100);
           
