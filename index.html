@@ -19,7 +19,7 @@
         radial-gradient(circle at 50% 50%, 
           rgba(16, 0, 64, 0.9) 0%,
           rgba(8, 0, 32, 0.95) 100%);
-      font-family: 'HarmonyOS Sans', sans-serif;
+      font-family: sans-serif;
       overflow: hidden;
       position: relative;
       color: hsl(255, 100%, 97%);
@@ -150,7 +150,7 @@
       position: absolute;
       top: -27px;
       left: 0px;
-      font-size: 0.7em;
+      font-size: 0.6em;
       color: #e0d4ff;
       padding: 2px 8px;
       border-radius: 3px;
@@ -353,7 +353,7 @@
       background: rgba(16, 0, 48, 0.5);
       color: #e0d4ff;
       font-size: 1.5em;
-      font-family: 'HarmonyOS Sans', sans-serif;
+      font-family: sans-serif;
       cursor: pointer;
       transition: all 0.3s ease;
     }
@@ -374,7 +374,7 @@
       border-radius: 4px;
       color: #e0d4ff;
       font-size: 1.5em;
-      font-family: 'HarmonyOS Sans', sans-serif;
+      font-family: sans-serif;
       min-width: 200px;
     }
 
@@ -384,7 +384,7 @@
       border-radius: 4px;
       color: #e0d4ff;
       font-size: 1.5em;
-      font-family: 'HarmonyOS Sans', sans-serif;
+      font-family: sans-serif;
       min-width: 200px;
     }
 
@@ -515,12 +515,12 @@
       class="link-icon"
       loading="eager"
       decoding="sync">
-    <pre style="font-size: 10px; white-space: pre; user-select: none">
-  _____ _  __   ______ ___    _    _   _       ____  _____    _    _     __  __       _____ _____ ____  __  __ ___ _   _    _    _     
- | ____| | \ \ / / ___|_ _|  / \  | \ | |     |  _ \| ____|  / \  | |   |  \/  |     |_   _| ____|  _ \|  \/  |_ _| \ | |  / \  | |    
- |  _| | |  \ V /\___ \| |  / _ \ |  \| |     | |_) |  _|   / _ \ | |   | |\/| |       | | |  _| | |_) | |\/| || ||  \| | / _ \ | |    
- | |___| |___| |  ___) | | / ___ \| |\  |     |  _ <| |___ / ___ \| |___| |  | |       | | | |___|  _ <| |  | || || |\  |/ ___ \| |___ 
- |_____|_____|_| |____/___/_/   \_\_| \_|     |_| \_\_____/_/   \_\_____|_|  |_|       |_| |_____|_| \_\_|  |_|___|_| \_/_/   \_\_____|</pre>
+    <pre style="font-size: 10px; font-weight: bold; white-space: pre; user-select: none">
+  _____ _  __   ______ ___    _    _   _     ____  _____    _    _    __  __     ____ ___ __  __ _   _ _       _  _____ ___ ___  _   _ 
+ | ____| | \ \ / / ___|_ _|  / \  | \ | |   |  _ \| ____|  / \  | |  |  \/  |   / ___|_ _|  \/  | | | | |     / \|_   _|_ _/ _ \| \ | |
+ |  _| | |  \ V /\___ \| |  / _ \ |  \| |   | |_) |  _|   / _ \ | |  | |\/| |   \___ \| || |\/| | | | | |    / _ \ | |  | | | | |  \| |
+ | |___| |___| |  ___) | | / ___ \| |\  |   |  _ <| |___ / ___ \| |__| |  | |    ___) | || |  | | |_| | |__ / ___ \| |  | | |_| | |\  |
+ |_____|_____|_| |____/___/_/   \_\_| \_|   |_| \_\_____/_/   \_\____|_|  |_|   |____/___|_|  |_|\___/|____/_/   \_\_| |___\___/|_| \_|</pre>
     <div class="ds-modal" id="settingsModal">
       <div class="ds-modal-content">
         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
@@ -635,8 +635,9 @@
 
             <div id="about-content" class="content-pane" style="user-select: none;">
               <!-- 关于 -->
-              <div class="version-info">当前版本: debug</div>
-              <div class="version-info"></div>
+              <div style="display: flex; font-size: 1.5em; justify-content: center;">Elysian Realm</div>
+              <div class="version-info">当前版本: undefined</div>
+              <div class="elysian-info"></div>
             </div>
 
           </div>
@@ -817,7 +818,7 @@
     });
 
     document.addEventListener("DOMContentLoaded", function() {
-      const versionInfoElement = document.querySelector('#about-content .version-info:first-child');
+      const versionInfoElement = document.querySelector('#about-content .version-info');
       if (versionInfoElement) {
         versionInfoElement.textContent = '当前版本: ' + version;
       }
